@@ -1,0 +1,7 @@
+
+#LOL
+p = '\x11\x1b\x16\x10\x0c\x14G\x19\x10\x05C\x03\x02\x1bC\x03FG\x19\r(\x0eG\x02(\x16\x05D(\x03\x1fD(0\".V'
+flag = ''
+for each in p:
+	flag += chr(ord(each) ^ 0x77)
+print(flag)
