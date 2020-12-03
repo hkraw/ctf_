@@ -1,4 +1,4 @@
-## I first wrote exploit for libc 2.31 without checking that the libc is now 2.32 for ubuntu 20.04 :: ::::::
+## I first wrote exploit for libc 2.31 without checking that the libc is now 2.32 for ubuntu 20.10 :: ::::::
 # Here's libc 2.31 version of exploit
 
 ```python3
